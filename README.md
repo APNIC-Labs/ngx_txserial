@@ -1,1 +1,44 @@
-# ngx_txserial
+Overview
+========
+
+`ngx_txserial` is a module that exposes a set of variables that APNIC Labs
+uses to drive 1x1 experiments
+
+
+txodd is an odd number in the sequence 1 .. 499999
+txeven is the next number in the same sequence. 
+
+as long as a single process group runs nginx, this sequence is handed out in sequence, and loops round every 499,999 calls. 
+
+txweek is a week number derived from the start of the experiment, and is used to prevent replay of data
+
+txsec is the seconds since 1970. It has proved useful as a value, alongside msec which is the same with microseconds after a point.
+Build
+=====
+
+  * Configure and nginx with `--add-module=path/to/ngx_txserial`
+
+Example
+=======
+
+    server {
+        listen       80;
+        server_name  example.com;
+        access_log   logs/example.com/conns.log conn;
+        access_log   logs/example.com/agents.log agent;
+
+        location / {
+		echo $txodd;
+		echo $txeven;
+		echo $txweek;
+		echo $txsec;
+        }
+    }
+```
+
+Background
+==========
+
+The code was copied from txid and then heavily modified.
+
+it needs configuration directives which I am still working out how to use in ngix module design
